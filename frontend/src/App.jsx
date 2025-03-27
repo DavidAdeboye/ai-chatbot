@@ -42,7 +42,7 @@ function App() {
       <aside className="sidebar">
         <button className="new-chat-btn">+ New Chat</button>
         <div className="history">{/* Chat history */}</div>
-        <div className="sidebar-footer">Made by AstrawebCrafts</div>
+        <div className="sidebar-footer">Made by <a href="https://github.com/DavidAdeboye/">Metaldness</a></div>
       </aside>
 
       <main className="main-content">
@@ -69,6 +69,7 @@ function App() {
               onChange={(e) => setInput(e.target.value)}
               placeholder="Message Virdict AI..."
               rows="1"
+              onClick={true}
               className="message-input"
             />
             <button type="submit" className="send-btn" disabled={!input.trim() || loading}>

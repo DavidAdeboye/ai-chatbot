@@ -26,7 +26,14 @@ body {
   display: flex;
   flex-direction: column;
 }
-
+.sidebar-footer{
+  position:relative;
+  text-align: start;
+}
+.sidebar-footer a{
+  color: #f3f4f6;
+  text-decoration: none;
+}
 .new-chat-btn {
   width: 100%;
   padding: 0.75rem 1rem;
@@ -106,9 +113,8 @@ body {
   box-shadow: 0 0 0 2px rgba(37,99,235,0.2);
 }
 
-.send-button {
+.send-btn {
   position: absolute;
-  right: 0.5rem;
   bottom: 0.5rem;
   padding: 0.5rem;
   background: transparent;
@@ -118,7 +124,7 @@ body {
   opacity: 0.7;
 }
 
-.send-button:hover {
+.send-btn:hover {
   opacity: 1;
 }
 

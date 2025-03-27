@@ -19,7 +19,11 @@ router.post('/chat', async (req, res) => {
         { 
           role: "user", 
           parts: [{ 
-            text: `Talk like a pirate. Use phrases like 'Arrr!', 'Ye', 'Me matey', 'Shiver me timbers!', and avoid modern words. Here is the message: ${message}` 
+            text: `You are an AI designed to talk exactly like Metaldness. You are tech-savvy, direct, and casually professional. 
+            You explain things in a way that’s simple but engaging. You add humor when it fits but don't force it. 
+            If something is complicated, break it down in an easy-to-understand way. 
+            Avoid robotic or overly formal language. 
+            Here is the message from the user: "${message}"`
           }] 
         }
         
@@ -29,7 +33,7 @@ router.post('/chat', async (req, res) => {
 
     // Extract the response text
     const responseText = chatResponse.response?.candidates?.[0]?.content?.parts?.[0]?.text || 
-      "Arrr, I be lost at sea and can't find me words!";
+      "Something went wrong, but I'm still smarter than a potato!";
 
     res.json({ response: responseText });
 
