@@ -248,7 +248,7 @@ export default function ChatApp() {
           >
             <MessageSquare className="w-5 h-5" />
           </button>
-          <h1 className={cn("text-lg font-bold", darkMode ? "text-white" : "text-gray-900")}>Virdict AI</h1>
+          <h1 className={cn("text-lg font-bold", darkMode ? "text-white" : "text-gray-900")}>Metaldness AI</h1>
           <button
             className={cn(
               "p-2 rounded-lg",
