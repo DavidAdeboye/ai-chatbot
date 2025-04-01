@@ -285,7 +285,7 @@ export default function ChatApp() {
                   "animate-shimmer",
                 )}
               >
-                Virdict AI
+                Metaldness AI
               </h1>
 
               <p className={cn("max-w-md mb-8", darkMode ? "text-gray-400" : "text-gray-600")}>
