@@ -268,7 +268,7 @@ export default function ChatApp() {
           >
             <div className="flex items-center justify-between">
               <span>Made by</span>
-              <a
+              <p
                 className={cn(
                   "flex items-center gap-1 transition-colors",
                   darkMode ? "text-indigo-400 hover:text-indigo-300" : "text-indigo-500 hover:text-indigo-400",
@@ -277,7 +277,7 @@ export default function ChatApp() {
                 rel="noopener noreferrer"
               >
                 micromist <ExternalLink size={12} />
-              </a>
+              </p>
             </div>
             <div className="flex items-center mt-2 text-[10px] opacity-70">
               <Command size={10} className="mr-1" /> + / to focus input
