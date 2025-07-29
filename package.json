@@ -2,9 +2,15 @@
   "name": "chatbotlaw-root",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"npm start --prefix backend\" \"npm run dev --prefix frontend\""
+    "dev": "concurrently \"npm start --prefix backend\" \"npm run dev --prefix frontend\"",
+    "test": "echo \"No tests yet\""
+
   },
   "devDependencies": {
-    "concurrently": "^8.0.0"
+    "@testing-library/jest-dom": "^6.6.4",
+    "@testing-library/react": "^16.3.0",
+    "concurrently": "^8.0.0",
+    "jsdom": "^26.1.0",
+    "vitest": "^3.2.4"
   }
 }
