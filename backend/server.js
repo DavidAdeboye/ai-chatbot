@@ -12,8 +12,24 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
+// Configure CORS
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? process.env.FRONTEND_URL || true
+    : 'http://localhost:5173'
+}));
 app.use(express.json());
+
+// Serve static files in production
+if (process.env.NODE_ENV === 'production') {
+  const path = await import('path');
+  const frontendPath = path.join(__dirname, '../frontend/dist');
+  app.use(express.static(frontendPath));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendPath, 'index.html'));
+  });
+  app.use(express.static(frontendPath));
+}
 
 // Mount the chat router
 app.use('/api', chatRouter);
