@@ -28,7 +28,8 @@ export default function ChatApp() {
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState("")
   const [loading, setLoading] = useState(false)
-  const [sessionId] = useState(crypto.randomUUID())
+  const [sessionId, setSessionId] = useState(() => crypto.randomUUID())
+  const [recentSessions, setRecentSessions] = useState([])
   const [audioPlayer] = useState(new Audio())
   const fileInputRef = useRef(null)
   const messagesEndRef = useRef(null)
@@ -42,6 +43,19 @@ export default function ChatApp() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
+
+  // Fetch recent sessions on mount and when sessionId changes
+  useEffect(() => {
+    const fetchRecent = async () => {
+      try {
+        const res = await axios.get("http://localhost:3000/api/chat/recent")
+        setRecentSessions(res.data.sessions || [])
+      } catch (e) {
+        setRecentSessions([])
+      }
+    }
+    fetchRecent()
+  }, [sessionId])
 
   // Add keyboard shortcut for sending messages
   useEffect(() => {
@@ -72,6 +86,9 @@ export default function ChatApp() {
       })
 
       setMessages((prev) => [...prev, { type: "assistant", content: response.data.response }])
+      // Refresh recent sessions
+      const res = await axios.get("http://localhost:3000/api/chat/recent")
+      setRecentSessions(res.data.sessions || [])
     } catch (error) {
       console.error("Error:", error)
       setMessages((prev) => [...prev, { type: "error", content: "An error occurred. Please try again." }])
@@ -80,9 +97,30 @@ export default function ChatApp() {
     }
   }
 
-  const startNewChat = () => {
+  const startNewChat = async () => {
+    const newId = crypto.randomUUID()
+    setSessionId(newId)
     setMessages([])
     setMenuOpen(false)
+    // Tell backend to start new chat
+    await axios.post("http://localhost:3000/api/chat", { sessionId: newId, newChat: true })
+    // Refresh recent sessions
+    const res = await axios.get("http://localhost:3000/api/chat/recent")
+    setRecentSessions(res.data.sessions || [])
+  }
+
+  // Resume a chat by sessionId
+  const resumeChat = async (id) => {
+    setSessionId(id)
+    setMenuOpen(false)
+    try {
+      const res = await axios.get(`http://localhost:3000/api/chat/history/${id}`)
+      const history = res.data.history || []
+      // Convert backend format to local format
+      setMessages(history.map(m => ({ type: m.role === 'user' ? 'user' : 'assistant', content: m.content })))
+    } catch {
+      setMessages([])
+    }
   }
 
   const toggleDarkMode = () => {
@@ -162,7 +200,7 @@ export default function ChatApp() {
                   <Sparkles className="w-4 h-4 text-indigo-400" />
                 </div>
               </div>
-              <h1 className={cn("text-xl font-bold", darkMode ? "text-white" : "text-gray-900")}>Metaldness</h1>
+              <h1 className={cn("text-xl font-bold", darkMode ? "text-white" : "text-gray-900")}>micromist</h1>
             </div>
             <button
               className={cn(
@@ -199,8 +237,27 @@ export default function ChatApp() {
               Recent Chats
             </div>
 
-            {/* This would be populated with actual chat history */}
-            <div className={cn("px-2 py-1 text-sm", darkMode ? "text-gray-500" : "text-gray-400")}>No recent chats</div>
+            {/* Recent chats list */}
+            {recentSessions.length === 0 ? (
+              <div className={cn("px-2 py-1 text-sm", darkMode ? "text-gray-500" : "text-gray-400")}>No recent chats</div>
+            ) : (
+              <ul>
+                {recentSessions.map((s) => (
+                  <li key={s.sessionId}>
+                    <button
+                      className={cn(
+                        "w-full text-left px-2 py-1 rounded hover:bg-indigo-500/10 transition-all text-xs truncate",
+                        s.sessionId === sessionId ? (darkMode ? "bg-indigo-600/20 text-indigo-300" : "bg-indigo-100 text-indigo-700") : ""
+                      )}
+                      onClick={() => resumeChat(s.sessionId)}
+                      title={s.title}
+                    >
+                      {s.title}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           <div
@@ -212,7 +269,6 @@ export default function ChatApp() {
             <div className="flex items-center justify-between">
               <span>Made by</span>
               <a
-                href="https://github.com/DavidAdeboye/"
                 className={cn(
                   "flex items-center gap-1 transition-colors",
                   darkMode ? "text-indigo-400 hover:text-indigo-300" : "text-indigo-500 hover:text-indigo-400",
@@ -220,7 +276,7 @@ export default function ChatApp() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Metaldness <ExternalLink size={12} />
+                micromist <ExternalLink size={12} />
               </a>
             </div>
             <div className="flex items-center mt-2 text-[10px] opacity-70">
@@ -248,7 +304,7 @@ export default function ChatApp() {
           >
             <MessageSquare className="w-5 h-5" />
           </button>
-          <h1 className={cn("text-lg font-bold", darkMode ? "text-white" : "text-gray-900")}>Metaldness AI</h1>
+          <h1 className={cn("text-lg font-bold", darkMode ? "text-white" : "text-gray-900")}>micromist AI</h1>
           <button
             className={cn(
               "p-2 rounded-lg",
@@ -285,7 +341,7 @@ export default function ChatApp() {
                   "animate-shimmer",
                 )}
               >
-                Metaldness AI
+                micromist AI
               </h1>
 
               <p className={cn("max-w-md mb-8", darkMode ? "text-gray-400" : "text-gray-600")}>
