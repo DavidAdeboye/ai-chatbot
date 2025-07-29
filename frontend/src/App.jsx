@@ -20,7 +20,7 @@ import {
   Loader2,
   Copy,
 } from "lucide-react"
-import { cn } from "../lib/utils"
+import { cn } from "./lib/utils"
 import "./App.css"
 import "./index.css"
 

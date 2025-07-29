@@ -3,7 +3,7 @@
  * @param {...string} classes - Class names to join
  * @returns {string} - Joined class names
  */
-function cn(...classes) {
+function cn(...classes: any[]) {
   return classes.filter(Boolean).join(" ")
 }
 
